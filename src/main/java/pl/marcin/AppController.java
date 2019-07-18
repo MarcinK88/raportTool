@@ -96,7 +96,7 @@ public class AppController {
                 //przypisujemy przekonwertowaną datę
                 ticket2.setOpen_time(sqlDate);
 
-                ticket2.setOpened_by(cellIterator.next().toString());
+                ticket2.setOpened_by(fmt.formatCellValue(cellIterator.next()));
                 ticket2.setAssignment(cellIterator.next().toString());
                 ticket2.setStatus(cellIterator.next().toString());
 
@@ -147,7 +147,7 @@ public class AppController {
 
                 ticket2s.add(ticket2);
 
-                ticketRepository.save(ticket2);
+                convertedRepository.save(TicketConverter.convertTicket(ticket2));
 
             }
 
