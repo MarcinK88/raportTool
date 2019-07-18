@@ -8,9 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
@@ -68,7 +66,7 @@ public class AppController {
         XSSFSheet mySheet = myWorkBook.getSheetAt(0);
         Iterator<Row> rowIterator = mySheet.iterator();
 
-        List<Ticket2> ticket2s = new ArrayList<>();
+        List<Ticket> ticket2s = new ArrayList<>();
         DateConverter dateConverter;
 
         Row row = rowIterator.next();
@@ -82,7 +80,7 @@ public class AppController {
             while (cellIterator.hasNext()) {
 
 
-                Ticket2 ticket2 = new Ticket2();
+                Ticket ticket2 = new Ticket();
                 valueToInsert = cellIterator.next().toString();
                 ticket2.setNumber(valueToInsert);
 
@@ -148,6 +146,9 @@ public class AppController {
                 ticket2.setTk_company_id(fmt.formatCellValue(cellIterator.next()));
 
                 ticket2s.add(ticket2);
+
+                ticketRepository.save(ticket2);
+
             }
 
 
@@ -171,12 +172,5 @@ public class AppController {
         return "redirect:/test";
     }
 
-    @GetMapping("/import/{tickets}")
-    @ResponseBody
-    public String importProcedure(Model model, @PathVariable List<Ticket2> tickets) {
 
-
-
-        return tickets.get(2).getNumber();
-    }
 }

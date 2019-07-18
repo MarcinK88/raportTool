@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%--
   Created by IntelliJ IDEA.
   User: 10619730
@@ -13,7 +14,6 @@
 </head>
 <body>
 <a href="/">Homepage</a><br>
-<a href="/import/{tickets}">import tickets</a>
 <table border="1">
     <tr>
 
