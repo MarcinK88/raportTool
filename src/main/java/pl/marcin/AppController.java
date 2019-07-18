@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,8 +54,7 @@ public class AppController {
     }
 
     @GetMapping("/test")
-    @ResponseBody
-    public String testimport() throws Exception {
+    public String testimport(Model model) throws Exception {
         File myFile = new File("C:\\Users\\10619730\\Desktop\\New folder\\raportTool3\\src\\test.xlsx");
         FileInputStream fis = new FileInputStream(myFile);
         XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
@@ -65,21 +62,49 @@ public class AppController {
         Iterator<Row> rowIterator = mySheet.iterator();
 
         List<Ticket2> ticket2s = new ArrayList<>();
+        DateConverter dateConverter;
+
+        Row row = rowIterator.next();
         while (rowIterator.hasNext()) {
-            Row row = rowIterator.next();
+            row = rowIterator.next();
 
             // For each row, iterate through each columns
             Iterator<Cell> cellIterator = row.cellIterator();
+            String valueToInsert = "";
             while (cellIterator.hasNext()) {
 
 
                 Ticket2 ticket2 = new Ticket2();
-                ticket2.setNumber(cellIterator.next().toString());
-                ticket2.setOpen_time(Date.valueOf(cellIterator.next().toString()));
+                valueToInsert = cellIterator.next().toString();
+                ticket2.setNumber(valueToInsert);
+
+                //pobieramy datę z pliku
+                valueToInsert = cellIterator.next().toString();
+
+                //tworzymy konwerter daty
+                dateConverter = new DateConverter(valueToInsert);
+
+                //używamy konwertera daty
+                java.sql.Date sqlDate = dateConverter.toSqlDate();
+
+                //przypisujemy przekonwertowaną datę
+                ticket2.setOpen_time(sqlDate);
+
                 ticket2.setOpened_by(cellIterator.next().toString());
                 ticket2.setAssignment(cellIterator.next().toString());
                 ticket2.setStatus(cellIterator.next().toString());
-                ticket2.setClose_time(Date.valueOf(cellIterator.next().toString()));
+
+                //pobieramy datę z pliku
+                valueToInsert = cellIterator.next().toString();
+
+                //tworzymy konwerter daty
+                dateConverter = new DateConverter(valueToInsert);
+
+                //używamy konwertera daty
+                sqlDate = dateConverter.toSqlDate();
+
+                //przypisujemy przekonwertowaną datę
+                ticket2.setClose_time(sqlDate);
                 ticket2.setResolution_code(cellIterator.next().toString());
                 ticket2.setLocation(cellIterator.next().toString());
                 ticket2.setAssignee_name(cellIterator.next().toString());
@@ -90,7 +115,17 @@ public class AppController {
                 ticket2.setRequest_type(cellIterator.next().toString());
                 ticket2.setProduct_type(cellIterator.next().toString());
                 ticket2.setResolved_by(cellIterator.next().toString());
-                ticket2.setResolved_time(Date.valueOf(cellIterator.next().toString()));
+
+                //pobieramy datę z pliku
+                valueToInsert = cellIterator.next().toString();
+
+                //tworzymy konwerter daty
+                dateConverter = new DateConverter(valueToInsert);
+
+                //używamy konwertera daty
+                sqlDate = dateConverter.toSqlDate();
+
+                ticket2.setResolved_time(sqlDate);
                 ticket2.setContact_service(cellIterator.next().toString());
                 ticket2.setTk_contact_fullname(cellIterator.next().toString());
                 ticket2.setTk_contact_email(cellIterator.next().toString());
@@ -108,6 +143,8 @@ public class AppController {
 
 
         }
-        return ticket2s.get(2).getNumber();
+        model.addAttribute("tickets", ticket2s);
+
+        return "ticketlist2";
     }
 }
