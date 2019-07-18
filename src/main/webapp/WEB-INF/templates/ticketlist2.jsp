@@ -12,7 +12,8 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/">Homepage</a>
+<a href="/">Homepage</a><br>
+<a href="/import/{tickets}">import tickets</a>
 <table border="1">
     <tr>
 

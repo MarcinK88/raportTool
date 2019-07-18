@@ -1,6 +1,7 @@
 package pl.marcin;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -8,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ public class AppController {
     @Autowired
     private ConvertedRepository convertedRepository;
 
+    private File selectedFile;
     @GetMapping("/")
     public String homepage() {
         return "homepage";
@@ -55,8 +61,9 @@ public class AppController {
 
     @GetMapping("/test")
     public String testimport(Model model) throws Exception {
-        File myFile = new File("C:\\Users\\10619730\\Desktop\\New folder\\raportTool3\\src\\test.xlsx");
-        FileInputStream fis = new FileInputStream(myFile);
+//        System.out.println("w testpage: " + selectedFile.getAbsolutePath());
+//        File myFile = new File("C:\\Users\\10619730\\Desktop\\New folder\\raportTool3\\src\\test.xlsx");
+        FileInputStream fis = new FileInputStream(selectedFile);
         XSSFWorkbook myWorkBook = new XSSFWorkbook(fis);
         XSSFSheet mySheet = myWorkBook.getSheetAt(0);
         Iterator<Row> rowIterator = mySheet.iterator();
@@ -65,6 +72,7 @@ public class AppController {
         DateConverter dateConverter;
 
         Row row = rowIterator.next();
+        DataFormatter fmt = new DataFormatter();
         while (rowIterator.hasNext()) {
             row = rowIterator.next();
 
@@ -107,8 +115,9 @@ public class AppController {
                 ticket2.setClose_time(sqlDate);
                 ticket2.setResolution_code(cellIterator.next().toString());
                 ticket2.setLocation(cellIterator.next().toString());
-                ticket2.setAssignee_name(cellIterator.next().toString());
-                ticket2.setContact_name(cellIterator.next().toString());
+                //
+                ticket2.setAssignee_name(fmt.formatCellValue(cellIterator.next()));
+                ticket2.setContact_name(fmt.formatCellValue(cellIterator.next()));
                 ticket2.setCompany(cellIterator.next().toString());
                 ticket2.setBrief_description(cellIterator.next().toString());
                 ticket2.setProblem_status(cellIterator.next().toString());
@@ -126,7 +135,7 @@ public class AppController {
                 sqlDate = dateConverter.toSqlDate();
 
                 ticket2.setResolved_time(sqlDate);
-                ticket2.setContact_service(cellIterator.next().toString());
+                ticket2.setContact_service(fmt.formatCellValue(cellIterator.next()));
                 ticket2.setTk_contact_fullname(cellIterator.next().toString());
                 ticket2.setTk_contact_email(cellIterator.next().toString());
                 ticket2.setTk_sap_company_full_name(cellIterator.next().toString());
@@ -136,7 +145,7 @@ public class AppController {
                 ticket2.setBa(cellIterator.next().toString());
                 ticket2.setTk_country_fullname(cellIterator.next().toString());
                 ticket2.setDim_regions_id(cellIterator.next().toString());
-                ticket2.setTk_company_id(cellIterator.next().toString());
+                ticket2.setTk_company_id(fmt.formatCellValue(cellIterator.next()));
 
                 ticket2s.add(ticket2);
             }
@@ -145,6 +154,29 @@ public class AppController {
         }
         model.addAttribute("tickets", ticket2s);
 
+
         return "ticketlist2";
+    }
+
+    @GetMapping("/importlist")
+    public String importFile(Model model){
+
+        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        int returnValue = jfc.showOpenDialog(null);
+
+        if(returnValue == JFileChooser.APPROVE_OPTION) {
+            selectedFile = jfc.getSelectedFile();
+        }
+
+        return "redirect:/test";
+    }
+
+    @GetMapping("/import/{tickets}")
+    @ResponseBody
+    public String importProcedure(Model model, @PathVariable List<Ticket2> tickets) {
+
+
+
+        return tickets.get(2).getNumber();
     }
 }
