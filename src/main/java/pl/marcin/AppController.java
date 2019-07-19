@@ -10,12 +10,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
 import javax.swing.*;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.util.List;
 
 @Controller
@@ -30,7 +35,9 @@ public class AppController {
 
     private File selectedFile;
     @GetMapping("/")
-    public String homepage() {
+    public String homepage(HttpServletRequest request, Model model) {
+
+//        model.addAttribute("loggedUser", request.getAttribute("loggedUser"));
         return "homepage";
     }
 
