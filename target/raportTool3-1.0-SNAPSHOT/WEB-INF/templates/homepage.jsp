@@ -16,6 +16,8 @@ logged user: ${sessionScope.get("loggedUser")}
     <li><a href="/alltickets">All tickets</a></li>
     <li><a href="/opentickets">Open tickets</a></li>
     <li><a href="/converted">Converted tickets</a></li>
+    <li><a href="/test">Test page</a></li>
+    <li><a href="/importlist">Import file</a></li>
 </ul>
 </body>
 </html>
