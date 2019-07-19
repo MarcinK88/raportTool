@@ -94,7 +94,7 @@ public class WebApp implements WebMvcConfigurer {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/sm@tk?useSSL=false&zeroDateTimeBehavior=convertToNull");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/sm@tk?useSSL=false&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true");
         dataSource.setUsername("root");
         dataSource.setPassword("coderslab");
         return dataSource;
