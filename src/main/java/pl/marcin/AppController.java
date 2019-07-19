@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -18,7 +20,9 @@ public class AppController {
     private ConvertedRepository convertedRepository;
 
     @GetMapping("/")
-    public String homepage() {
+    public String homepage(HttpServletRequest request, Model model) {
+
+//        model.addAttribute("loggedUser", request.getAttribute("loggedUser"));
         return "homepage";
     }
 
