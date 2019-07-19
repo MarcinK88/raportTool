@@ -12,6 +12,7 @@
     <title>Title</title>
 </head>
 <body>
+logged user: ${sessionScope.get("loggedUser")}<br>
 <a href="/">Homepage</a>
 <table border="1">
     <tr>

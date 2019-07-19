@@ -1,6 +1,8 @@
 package pl.marcin;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,7 +27,6 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    @ResponseBody
     public String postLogin(@ModelAttribute User user, HttpServletRequest request) {
 
 
@@ -35,9 +36,9 @@ public class LoginController {
             HttpSession session = request.getSession();
             session.setAttribute("loggedUser", user1.getLogin());
 
-            return "id: " + user1.getId() + ", login: " + user1.getLogin() + ", password: " + user1.getPassword() + ", logged user: " + session.getAttribute("loggedUser");
+            return "redirect:/";
         } else {
-            return "niepoprawny login lub hasło";
+            return "wrongpassword";
         }
 
 
