@@ -12,6 +12,7 @@
     <title>Title</title>
 </head>
 <body>
+logged user: ${sessionScope.get("loggedUser")}
 <table border="1">
     <th>id</th>
     <th>Request ID</th>

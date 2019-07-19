@@ -11,6 +11,7 @@
     <title>Title</title>
 </head>
 <body>
+logged user: ${sessionScope.get("loggedUser")}
 <ul>
     <li><a href="/alltickets">All tickets</a></li>
     <li><a href="/opentickets">Open tickets</a></li>
