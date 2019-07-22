@@ -16,9 +16,9 @@ logged user: ${sessionScope.get("loggedUser")}<br>
 <a href="/">Homepage</a>
 <form:form method="post" modelAttribute="ticket">
     <form:hidden path="id" />
-    Request ID <form:input path="requestId" disabled="true"/><br>
+    Request ID <form:input path="requestId"/><br>
     Request type <form:select path="requestType" items="${requestType}"/><br>
-    Certificate name <form:input path="certificateName" disabled="true"/><br>
+    Certificate name <form:input path="certificateName"/><br>
     Domain total number/tag <form:input path="domainTotalNumberTag"/><br>
     Request owner <form:select path="requestOwner" items="${ticketOwners}"/><br>
     Request contributor <form:input path="requestContributor"/><br>
