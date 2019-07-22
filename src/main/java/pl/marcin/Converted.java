@@ -1,5 +1,7 @@
 package pl.marcin;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.sql.Date;
 
@@ -32,6 +34,7 @@ public class Converted {
     @Column(name = "`Open month`")
     private String openMonth;
     @Column(name = "`Close date`")
+    @Nullable
     private Date closeDate;
     @Column(name = "`Close CW`")
     private Integer closeCw;

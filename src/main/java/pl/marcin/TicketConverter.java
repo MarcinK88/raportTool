@@ -20,7 +20,15 @@ public class TicketConverter {
             converted.setRequestType(ticketsToConvert.get(i).getRequest_type());
             converted.setCertificateName(ticketsToConvert.get(i).getBrief_description());
             converted.setRequestOwner(ticketsToConvert.get(i).getTk_assignee_name_fullname());
-            converted.setRequestStatus(ticketsToConvert.get(i).getStatus());
+            System.out.println("problem status = " + ticketsToConvert.get(i).getProblem_status());
+            if(ticketsToConvert.get(i).getProblem_status().equalsIgnoreCase("closed") ||
+                    ticketsToConvert.get(i).getProblem_status().equalsIgnoreCase("resolved")) {
+                System.out.println("wykryto wartość in closed lub resolved, powinno zapisać Closed");
+                converted.setRequestStatus("Closed");
+            } else {
+                System.out.println("wykryto inną wartośc, powinno zapisać In progress");
+                converted.setRequestStatus("In progress");
+            }
             converted.setYear(ticketsToConvert.get(i).getOpen_time().toLocalDate().getYear());
             converted.setOpenDate(ticketsToConvert.get(i).getOpen_time());
             converted.setOpenCw(ticketsToConvert.get(i).getOpen_time().toLocalDate().getDayOfYear()/7);
@@ -49,16 +57,26 @@ public class TicketConverter {
         converted.setRequestType(ticketToConvert.getRequest_type());
         converted.setCertificateName(ticketToConvert.getBrief_description());
         converted.setRequestOwner(ticketToConvert.getTk_assignee_name_fullname());
-        converted.setRequestStatus(ticketToConvert.getStatus());
+        if(ticketToConvert.getProblem_status().equalsIgnoreCase("closed") ||
+                ticketToConvert.getProblem_status().equalsIgnoreCase("resolved")) {
+            converted.setRequestStatus("Closed");
+        } else {
+            converted.setRequestStatus("In progress");
+        }
         converted.setYear(ticketToConvert.getOpen_time().toLocalDate().getYear());
         converted.setOpenDate(ticketToConvert.getOpen_time());
-        converted.setOpenCw(ticketToConvert.getOpen_time().toLocalDate().getDayOfYear()/7);
+        converted.setOpenCw(ticketToConvert.getOpen_time().toLocalDate().getDayOfYear()/7 + 1);
         converted.setOpenMonth(ticketToConvert.getOpen_time().toLocalDate().getMonth().name());
-        if(ticketToConvert.getClose_time() != null) {
-            converted.setCloseDate(ticketToConvert.getClose_time());
-            converted.setCloseCw(ticketToConvert.getClose_time().toLocalDate().getDayOfYear() / 7);
-            converted.setCloseMonth(ticketToConvert.getClose_time().toLocalDate().getMonth().name());
-            converted.setResolutionTimeInDays((int) (converted.getCloseDate().getTime() - converted.getOpenDate().getTime()));
+        if(ticketToConvert.getResolved_time() != null) {
+            converted.setCloseDate(ticketToConvert.getResolved_time());
+            converted.setCloseCw(ticketToConvert.getResolved_time().toLocalDate().getDayOfYear() / 7 + 1);
+            converted.setCloseMonth(ticketToConvert.getResolved_time().toLocalDate().getMonth().name());
+
+            converted.setResolutionTimeInDays(converted.getCloseDate().toLocalDate().getDayOfYear() -
+                    converted.getOpenDate().toLocalDate().getDayOfYear());
+            if(converted.getResolutionTimeInDays() == 0) {
+                converted.setResolutionTimeInDays(1);
+            }
         }
         converted.setRegion(ticketToConvert.getDim_regions_id());
         converted.setBa(ticketToConvert.getBa());

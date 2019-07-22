@@ -39,7 +39,7 @@ logged user: ${sessionScope.get("loggedUser")}<br>
     <th>Requester</th>
     <th>Comments</th>
     <c:forEach items="${converted}" var="ticket"><tr>
-        <td>${ticket.id}</td>
+        <td>${ticket.id} <a href="/editTicket/${ticket.id}">[EDIT]</a></td>
         <td>${ticket.requestId}</td>
         <td>${ticket.requestType}</td>
         <td>${ticket.certificateName}</td>

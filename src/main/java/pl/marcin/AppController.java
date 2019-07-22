@@ -37,28 +37,7 @@ public class AppController {
         return "homepage";
     }
 
-    @GetMapping("/alltickets")
-    public String alltickets(Model model) {
-        List<Ticket> tickets = ticketRepository.findAll();
-        model.addAttribute("tickets", tickets);
 
-        return "ticketlist";
-    }
-
-    @GetMapping("/opentickets")
-    public String opentickets(Model model) {
-        List<Ticket> tickets = ticketRepository.findByStatusLike("open");
-        model.addAttribute("tickets", tickets);
-
-        return "ticketlist";
-    }
-
-    @GetMapping("/converted")
-    public String converted(Model model) {
-        List<Converted> converted = convertedRepository.findAll();
-        model.addAttribute("converted", converted);
-        return "converted";
-    }
 
     @GetMapping("/test")
     public String testimport(Model model) throws Exception {
@@ -150,6 +129,7 @@ public class AppController {
 
                 ticket2s.add(ticket2);
 
+
                 convertedRepository.save(TicketConverter.convertTicket(ticket2));
 
             }
@@ -174,6 +154,13 @@ public class AppController {
 
         return "redirect:/test";
     }
+
+    @GetMapping("/tickets")
+    public String tickets(){
+        return "/tickets";
+    }
+
+
 
 
 }
