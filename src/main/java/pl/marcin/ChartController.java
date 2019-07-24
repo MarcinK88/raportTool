@@ -97,6 +97,7 @@ public class ChartController {
 
 
         tableWriter.createRequestPerBa(convertedRepository);
+        tableWriter.createRequestPerRegion(convertedRepository);
         tableWriter.saveToFile();
 
         return "charttest";

@@ -22,6 +22,7 @@ public class TableWriter {
     private XSSFWorkbook wb;
     private XSSFSheet sheet;
     private List<String> ba;
+    private List<String> region;
 
     public TableWriter() {
 
@@ -33,6 +34,7 @@ public class TableWriter {
             years.add(i);
         }
         this.ba = Arrays.asList("CO", "IS", "MX", "SE", "ET", "CT");
+        this.region = Arrays.asList("APAC", "EMEA", "LATAM", "NA");
 
 
 
@@ -109,7 +111,7 @@ public class TableWriter {
 
         //uzupełnianie pierwszego rzędu
         cell = row.createCell(0);
-        int i = 0;
+
         for (int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++) {
             cell = row.createCell((short) colIndex);
             cell.setCellValue(this.ba.get(colIndex-1));
@@ -127,27 +129,68 @@ public class TableWriter {
             } else {
                 cell.setCellValue(this.months.get(selectedMonthIndex - (NUM_OF_ROWS - rowIndex - 1)));
             }
-            i=0;
+
             for(int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++){
                 cell = row.createCell(colIndex);
 
                 //jeżeli wybrany styczeń - luty
                 if(selectedMonthIndex-(NUM_OF_ROWS-rowIndex-2) <= 0){
-                    System.out.println("wybrany ba: " + this.ba.get(colIndex - 1));
-                    System.out.println("wybrany rok: " + (selectedYear-1));
-                    System.out.println("wybrany miesiąc: " + (this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex)));
-                    System.out.println("wpisana wartość: " + convertedRepository.countRequestPerBa(this.ba.get(colIndex - 1), selectedYear - 1, this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex)) );
-                    System.out.println("this.months.size = " + this.months.size());
-                    System.out.println("NUM_OF_ROWS: " + NUM_OF_ROWS);
-                    System.out.println("rowIndex: " + rowIndex);
-                    System.out.println("selectedMonthIndex: " + selectedMonthIndex);
-                    System.out.println("NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2 : " + (NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2));
-                    System.out.println("this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2): " + (this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2)));
-                                                                                                                            //          12-(4-1-1
+
                     cell.setCellValue(convertedRepository.countRequestPerBa(this.ba.get(colIndex - 1), selectedYear - 1, this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2)));
-                    i++;
+
                 } else {
                     cell.setCellValue(convertedRepository.countRequestPerBa(this.ba.get(colIndex - 1), selectedYear, selectedMonthIndex - (NUM_OF_ROWS - rowIndex - 2)));
+                }
+            }
+        }
+    }
+
+    public void createRequestPerRegion(ConvertedRepository convertedRepository) {
+
+        int selectedMonthIndex = this.months.indexOf(this.selectedMonth);
+
+        //tworzenie arkusza
+        sheet = wb.createSheet("Requests per Region");
+
+        //liczba wierszy i kolumn
+        final int NUM_OF_ROWS =4;
+        final int NUM_OF_COLUMNS = 5;
+        Row row;
+        Cell cell;
+
+        //tworzenie pierwszego rzędu
+        row = sheet.createRow(0);
+
+        //uzupełnianie pierwszego rzędu
+        cell = row.createCell(0);
+        for (int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++) {
+            cell = row.createCell((short) colIndex);
+            cell.setCellValue(this.region.get(colIndex-1));
+        }
+
+        //kolejne rzędy
+        for (int rowIndex = 1; rowIndex < NUM_OF_ROWS; rowIndex++) {
+            //tworzenie rzędu
+            row = sheet.createRow((short) rowIndex);
+            cell = row.createCell(0);
+
+            //jeżeli wybrany styczeń - luty
+            if(selectedMonthIndex-(NUM_OF_ROWS-rowIndex-1) < 0) {
+                cell.setCellValue(this.months.get(this.months.size() -(NUM_OF_ROWS - rowIndex - selectedMonthIndex - 1)));
+            } else {
+                cell.setCellValue(this.months.get(selectedMonthIndex - (NUM_OF_ROWS - rowIndex - 1)));
+            }
+
+            for(int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++){
+                cell = row.createCell(colIndex);
+
+                //jeżeli wybrany styczeń - luty
+                if(selectedMonthIndex-(NUM_OF_ROWS-rowIndex-2) <= 0){
+
+                    cell.setCellValue(convertedRepository.countRequestPerRegion(this.region.get(colIndex - 1), selectedYear - 1, this.months.size() - (NUM_OF_ROWS - rowIndex - selectedMonthIndex - 2)));
+
+                } else {
+                    cell.setCellValue(convertedRepository.countRequestPerRegion(this.region.get(colIndex - 1), selectedYear, selectedMonthIndex - (NUM_OF_ROWS - rowIndex - 2)));
                 }
             }
 
@@ -200,5 +243,21 @@ public class TableWriter {
 
     public void setTypes(List<String> types) {
         this.types = types;
+    }
+
+    public List<String> getBa() {
+        return ba;
+    }
+
+    public void setBa(List<String> ba) {
+        this.ba = ba;
+    }
+
+    public List<String> getRegion() {
+        return region;
+    }
+
+    public void setRegion(List<String> region) {
+        this.region = region;
     }
 }
