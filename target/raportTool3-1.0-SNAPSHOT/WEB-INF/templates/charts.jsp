@@ -12,7 +12,9 @@
 </head>
 <body>
 <ul>
-<li><a href="/charttest">charttest</a></li>
+    <li><a href="/charttest">opened per month</a></li>
+    <li><a href="/charttest">opened per BA</a></li>
+    <li><a href="/charttest">opened per Region</a></li>
 </ul>
 </body>
 </html>

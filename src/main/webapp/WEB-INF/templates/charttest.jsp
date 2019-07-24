@@ -12,10 +12,10 @@
     <title>Title</title>
 </head>
 <body>
-<form:form method="post" modelAttribute="selectedDate">
+<form:form method="post" modelAttribute="tableWriter">
 
-    Select Year: <form:select path="year"><form:options items="${years}"/></form:select> <br>
-    Select Month: <form:select path="month"><form:options items="${months}"/></form:select><br>
+    Select Year: <form:select path="selectedYear"><form:options items="${tableWriter.years}"/></form:select> <br>
+    Select Month: <form:select path="selectedMonth"><form:options items="${tableWriter.months}"/></form:select><br>
     <input type="submit" value="generate">
 
 

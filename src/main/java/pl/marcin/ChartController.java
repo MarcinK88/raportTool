@@ -1,14 +1,10 @@
 package pl.marcin;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xddf.usermodel.PresetColor;
 import org.apache.poi.xddf.usermodel.XDDFColor;
 import org.apache.poi.xddf.usermodel.XDDFShapeProperties;
 import org.apache.poi.xddf.usermodel.XDDFSolidFillProperties;
 import org.apache.poi.xddf.usermodel.chart.XDDFChartData;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Controller
 public class ChartController {
@@ -36,69 +29,21 @@ public class ChartController {
     @GetMapping("/charttest")
     public String charttestGet(Model model) {
 
-        List<Integer> years = Arrays.asList(2016,2017,2018,2019);
-        List<String> months = Arrays.asList("january","february","march","april","may","june","july","august","september","october","november","december");
-        model.addAttribute("years",years);
-        model.addAttribute("months",months);
-        SelectedDate selectedDate = new SelectedDate();
-        model.addAttribute(selectedDate);
+        TableWriter tableWriter = new TableWriter();
+
+        model.addAttribute("years", tableWriter.getYears());
+        model.addAttribute("months", tableWriter.getMonths());
+
+        model.addAttribute(tableWriter);
         return "charttest";
     }
 
     @PostMapping("/charttest")
-    public String charttestPost( @ModelAttribute SelectedDate selectedDate) throws IOException {
+    public String charttestPost(@ModelAttribute TableWriter tableWriter) throws IOException {
 
+        tableWriter.createOpenedPerMonth(convertedRepository);
 
-
-        List<String> months = Arrays.asList("january","february","march","april","may","june","july","august","september","october","november","december");
-        List<String> types = Arrays.asList("Other","Domain mgmt", "IP mgmt", "SSL Certificate", "DNS");
-        int selectedMonth = months.indexOf(selectedDate.month); //june
-        int selectedYear = selectedDate.year;
-        try (XSSFWorkbook wb = new XSSFWorkbook()) {
-            //tworzenie excela
-            XSSFSheet sheet = wb.createSheet("opened per month");
-            //liczba wierszy i kolumn
-            final int NUM_OF_ROWS = 6;
-            final int NUM_OF_COLUMNS = 13;
-            //ostatni uwzględniany miesiąc
-
-            // Create a row and put some cells in it. Rows are 0 based.
-            Row row;
-            Cell cell;
-
-            //tworzenie pierwszego rzędu
-            row = sheet.createRow(0);
-            //uzupełnianie pierwszego rzędu
-            cell = row.createCell(0);
-            int i = 0;
-            for (int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++) {
-                cell = row.createCell((short) colIndex);
-                if((colIndex+selectedMonth)< months.toArray().length) {
-                    cell.setCellValue(months.get(colIndex + selectedMonth));
-                } else {
-                    cell.setCellValue(months.get(i));
-                    i++;
-                }
-
-            }
-
-            for (int rowIndex = 1; rowIndex < NUM_OF_ROWS; rowIndex++) {
-                row = sheet.createRow((short) rowIndex);
-                cell = row.createCell(0);
-                cell.setCellValue(types.get(rowIndex-1));
-                i = 0;
-                for (int colIndex = 1; colIndex < NUM_OF_COLUMNS; colIndex++) {
-                    cell = row.createCell((short) colIndex);
-                    if((colIndex+selectedMonth)< months.toArray().length) {
-                        cell.setCellValue(convertedRepository.countByRequestTypeAndOpenDateStartsWith(types.get(rowIndex-1),selectedYear-1, colIndex + selectedMonth + 1));
-                    } else {
-                        cell.setCellValue(convertedRepository.countByRequestTypeAndOpenDateStartsWith(types.get(rowIndex-1),selectedYear, i + 1));
-                        i++;
-                    }
-
-                }
-            }
-
+//            https://stackoverflow.com/questions/38913412/create-bar-chart-in-excel-with-apache-poi
 //            XSSFDrawing drawing = sheet.createDrawingPatriarch();
 //            XSSFClientAnchor anchor = drawing.createAnchor(0, 0, 0, 0, 0, 5, 10, 15);
 //
@@ -148,16 +93,17 @@ public class ChartController {
 //            solidFillSeries(data, 3, PresetColor.BLUE);
 //            solidFillSeries(data, 4, PresetColor.GRAY);
 
-            // Write the output to a file
-            try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\10619730\\Desktop\\New folder\\test.xlsx")) {
-                wb.write(fileOut);
-            }
 
-            return "charttest";
-        }
 
+
+        tableWriter.createRequestPerBa(convertedRepository);
+        tableWriter.saveToFile();
+
+        return "charttest";
     }
-    private static void solidFillSeries (XDDFChartData data,int index, PresetColor color){
+
+
+    private static void solidFillSeries(XDDFChartData data, int index, PresetColor color) {
         XDDFSolidFillProperties fill = new XDDFSolidFillProperties(XDDFColor.from(color));
         XDDFChartData.Series series = data.getSeries().get(index);
         XDDFShapeProperties properties = series.getShapeProperties();
