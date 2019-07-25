@@ -221,11 +221,35 @@ public class TableWriter {
             cell.setCellValue(this.category.get(rowIndex));
             cell = row.createCell(1);
             cell.setCellValue(convertedRepository.countRequestPerType(this.category.get(rowIndex), Date.valueOf(date.toLocalDate().minusMonths(2).toString()),
-                    Date.valueOf(date.toLocalDate().plusMonths(1).toString())));
-
+                    Date.valueOf(date.toLocalDate().plusMonths(1).toString())
+            ));
         }
+    }
 
+    public void createKpi1(ConvertedRepository convertedRepository) {
 
+        int selectedMonthIndex = this.months.indexOf(selectedMonth);
+
+        //tworzenie arkusza
+        sheet = wb.createSheet("kpi1");
+
+        //liczba wierszy i kolumn
+        final int NUM_OF_ROWS =3;
+        final int NUM_OF_COLUMNS = 2;
+        Row row;
+        Cell cell;
+
+        Date date = Date.valueOf(selectedYear + "-" + (selectedMonthIndex+1) + "-01");
+
+        //tworzenie rzędów
+        for(int rowIndex = 0; rowIndex < NUM_OF_ROWS; rowIndex++) {
+            row = sheet.createRow(rowIndex);
+            cell = row.createCell(0);
+            cell.setCellValue(date.toLocalDate().minusMonths(NUM_OF_ROWS - rowIndex -1).getMonth().name());
+            cell = row.createCell(1);
+            cell.setCellValue(convertedRepository.kpi1(Date.valueOf(date.toLocalDate().minusMonths(NUM_OF_ROWS - rowIndex -1).toString()),
+                    Date.valueOf(date.toLocalDate().minusMonths(NUM_OF_ROWS - rowIndex - 2).toString())));
+        }
     }
 
     public void saveToFile() throws IOException {
