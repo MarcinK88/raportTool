@@ -7,6 +7,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +25,7 @@ public class TableWriter {
     private XSSFSheet sheet;
     private List<String> ba;
     private List<String> region;
+    private List<String> category;
 
     public TableWriter() {
 
@@ -35,7 +38,7 @@ public class TableWriter {
         }
         this.ba = Arrays.asList("CO", "IS", "MX", "SE", "ET", "CT");
         this.region = Arrays.asList("APAC", "EMEA", "LATAM", "NA");
-
+        this.category = Arrays.asList("DNS", "SSL Certificate", "IP mgmt", "Domain mgmt", "Other");
 
 
     }
@@ -193,6 +196,32 @@ public class TableWriter {
                     cell.setCellValue(convertedRepository.countRequestPerRegion(this.region.get(colIndex - 1), selectedYear, selectedMonthIndex - (NUM_OF_ROWS - rowIndex - 2)));
                 }
             }
+        }
+    }
+
+    public void createRequestPerCategory(ConvertedRepository convertedRepository) throws ParseException {
+
+        int selectedMonthIndex = this.months.indexOf(this.selectedMonth);
+        int selectedYear = this.selectedYear;
+
+        //tworzenie arkusza
+        sheet = wb.createSheet("Requests per Category");
+
+        //liczba wierszy i kolumn
+        final int NUM_OF_ROWS =5;
+        final int NUM_OF_COLUMNS = 2;
+        Row row;
+        Cell cell;
+        Date date = Date.valueOf(selectedYear + "-" + (selectedMonthIndex+1) + "-01");
+
+        //tworzenie rzędów
+        for(int rowIndex = 0; rowIndex < NUM_OF_ROWS; rowIndex++) {
+            row = sheet.createRow(rowIndex);
+            cell = row.createCell(0);
+            cell.setCellValue(this.category.get(rowIndex));
+            cell = row.createCell(1);
+            cell.setCellValue(convertedRepository.countRequestPerType(this.category.get(rowIndex), Date.valueOf(date.toLocalDate().minusMonths(2).toString()),
+                    Date.valueOf(date.toLocalDate().plusMonths(1).toString())));
 
         }
 
@@ -259,5 +288,13 @@ public class TableWriter {
 
     public void setRegion(List<String> region) {
         this.region = region;
+    }
+
+    public List<String> getCategory() {
+        return category;
+    }
+
+    public void setCategory(List<String> category) {
+        this.category = category;
     }
 }

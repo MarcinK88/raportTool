@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Controller
 public class ChartController {
@@ -39,7 +40,7 @@ public class ChartController {
     }
 
     @PostMapping("/charttest")
-    public String charttestPost(@ModelAttribute TableWriter tableWriter) throws IOException {
+    public String charttestPost(@ModelAttribute TableWriter tableWriter) throws IOException, ParseException {
 
         tableWriter.createOpenedPerMonth(convertedRepository);
 
@@ -98,6 +99,7 @@ public class ChartController {
 
         tableWriter.createRequestPerBa(convertedRepository);
         tableWriter.createRequestPerRegion(convertedRepository);
+        tableWriter.createRequestPerCategory(convertedRepository);
         tableWriter.saveToFile();
 
         return "charttest";
