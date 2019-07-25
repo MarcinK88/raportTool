@@ -278,6 +278,32 @@ public class TableWriter {
         }
     }
 
+    public void createKpi3(ConvertedRepository convertedRepository) {
+        int selectedMonthIndex = this.months.indexOf(selectedMonth);
+
+        //tworzenie arkusza
+        sheet = wb.createSheet("kpi3");
+
+        //liczba wierszy i kolumn
+        final int NUM_OF_ROWS =5;
+        final int NUM_OF_COLUMNS = 2;
+        Row row;
+        Cell cell;
+
+        Date date = Date.valueOf(selectedYear + "-" + (selectedMonthIndex+1) + "-01");
+
+        //tworzenie rzędów
+        for(int rowIndex = 0; rowIndex < NUM_OF_ROWS; rowIndex++) {
+            row = sheet.createRow(rowIndex);
+            cell = row.createCell(0);
+            cell.setCellValue(this.category.get(rowIndex));
+            cell = row.createCell(1);
+            cell.setCellValue(convertedRepository.kpi3(this.category.get(rowIndex),Date.valueOf(date.toLocalDate().minusMonths(2).toString()),
+                    Date.valueOf(date.toLocalDate().plusMonths(1).toString())));
+        }
+
+    }
+
     public void saveToFile() throws IOException {
         try (FileOutputStream fileOut = new FileOutputStream("C:\\Users\\10619730\\Desktop\\New folder\\test.xlsx")) {
             wb.write(fileOut);
