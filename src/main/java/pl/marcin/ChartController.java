@@ -101,6 +101,7 @@ public class ChartController {
         tableWriter.createRequestPerRegion(convertedRepository);
         tableWriter.createRequestPerCategory(convertedRepository);
         tableWriter.createKpi1(convertedRepository);
+        tableWriter.createKpi2(convertedRepository);
         tableWriter.saveToFile();
 
         return "charttest";

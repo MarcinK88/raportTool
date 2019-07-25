@@ -28,7 +28,7 @@ public interface ConvertedRepository extends JpaRepository<Converted, Long> {
     @Query(value = "select ROUND(AVG(`Resolution Time (in days)`),1) from converted where `Open date` >= ?1 and `Open date` < ?2", nativeQuery = true)
     double kpi1(Date begin, Date end);
 
-    @Query(value = "select ROUND(( (select COUNT(*) from converted where `Request status` = \"closed\" AND `Resolution Time (in days)` = 1 AND `Open date` >= ?1 and `Open date` < ?2) * 100 / (select COUNT(*) from converted where `Request status` = \"closed\" AND `Resolution Time (in days)` is not null AND `Open date` >= ?1 and `Open date` < ?2)),2)", nativeQuery = true)
+    @Query(value = "select ROUND(( (select COUNT(*) from converted where `Request status` = \"closed\" AND `Resolution Time (in days)` = 1 AND `Open date` >= ?1 and `Open date` < ?2) * 100 / (select COUNT(*) from converted where `Request status` = \"closed\" AND `Resolution Time (in days)` is not null AND `Open date` >= ?1 and `Open date` < ?2)),1)", nativeQuery = true)
     double kpi2(Date begin, Date end);
 
     @Query(value = "select ROUND(AVG(`Resolution Time (in days)`),1) from converted where `Request type` = ?1 AND `Open date` >= ?2 and `Open date` < ?3", nativeQuery = true)
